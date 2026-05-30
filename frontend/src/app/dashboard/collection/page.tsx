@@ -81,8 +81,8 @@ export default function CollectionPage() {
                 ) : loans.map((loan) => (
                   <tr key={loan._id} className={`hover:bg-gray-50 ${selectedLoan?._id === loan._id ? 'bg-blue-50' : ''}`}>
                     <td className="px-4 py-3">
-                      <p className="font-medium">{loan.borrower.name}</p>
-                      <p className="text-gray-400 text-xs">{loan.borrower.email}</p>
+                      <p className="font-medium">{loan.borrower?.name || "Unknown User"}</p>
+<p className="text-gray-400 text-xs">{loan.borrower?.email || "-"}</p>
                     </td>
                     <td className="px-4 py-3">{fmt(loan.totalRepayment)}</td>
                     <td className="px-4 py-3 text-green-600">{fmt(loan.totalPaid)}</td>
