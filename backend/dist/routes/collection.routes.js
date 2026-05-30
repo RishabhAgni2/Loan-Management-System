@@ -1,0 +1,12 @@
+"use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
+const express_1 = require("express");
+const collection_controller_1 = require("../controllers/collection.controller");
+const auth_1 = require("../middleware/auth");
+const rbac_1 = require("../middleware/rbac");
+const router = (0, express_1.Router)();
+router.use(auth_1.protect, (0, rbac_1.authorize)('collection', 'admin'));
+router.get('/loans', collection_controller_1.getDisbursedLoans);
+router.post('/:id/payment', collection_controller_1.recordPayment);
+router.get('/:id/payments', collection_controller_1.getLoanPayments);
+exports.default = router;
