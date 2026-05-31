@@ -12,6 +12,14 @@ const TOKEN_COOKIE = 'lms_token';
 
 export const dashboardRoles = ['admin', 'sales', 'sanction', 'disbursement', 'collection'];
 
+const roleHomePaths: Record<string, string> = {
+  admin: '/dashboard',
+  sales: '/dashboard/sales',
+  sanction: '/dashboard/sanction',
+  disbursement: '/dashboard/disbursement',
+  collection: '/dashboard/collection',
+};
+
 export const saveSession = ({ token, user }: AuthSession) => {
   localStorage.setItem(TOKEN_KEY, token);
   localStorage.setItem(USER_KEY, JSON.stringify(user));
@@ -33,7 +41,7 @@ export const getStoredUser = () => {
 
 export const getHomePathForRole = (role?: string) => {
   if (!role) return '/login';
-  return dashboardRoles.includes(role) ? '/dashboard' : '/apply/personal';
+  return roleHomePaths[role] || '/apply/personal';
 };
 
 export const logout = () => {

@@ -153,8 +153,8 @@ export default function DashboardPage() {
               ) : recentLoans.map((loan) => (
                 <tr key={loan._id} className="hover:bg-gray-50">
                   <td className="px-5 py-3">
-                    <p className="font-medium text-gray-800">{loan.borrower.name}</p>
-                    <p className="text-xs text-gray-400">{loan.borrower.email}</p>
+                    <p className="font-medium text-gray-800">{loan.borrower?.name || 'Unknown User'}</p>
+                    <p className="text-xs text-gray-400">{loan.borrower?.email || '-'}</p>
                   </td>
                   <td className="px-5 py-3 capitalize">{loan.status}</td>
                   <td className="px-5 py-3">{loan.totalRepayment.toLocaleString('en-IN')}</td>

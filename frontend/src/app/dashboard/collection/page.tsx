@@ -18,20 +18,29 @@ export default function CollectionPage() {
 
   const fetchLoans = () => {
     setLoading(true);
-    api.get('/collection/loans').then(({ data }) => setLoans(data.loans)).finally(() => setLoading(false));
+    api.get('/collection/loans')
+      .then(({ data }) => setLoans(data.loans))
+      .catch((err: unknown) => setError(getApiErrorMessage(err, 'Failed to load loans')))
+      .finally(() => setLoading(false));
   };
 
   const openLoan = async (loan: LoanApplication) => {
     setSelectedLoan(loan);
     setError('');
     setSuccess('');
-    const { data } = await api.get(`/collection/${loan._id}/payments`);
-    setPayments(data.payments);
+    try {
+      const { data } = await api.get(`/collection/${loan._id}/payments`);
+      setPayments(data.payments);
+    } catch (err: unknown) {
+      setPayments([]);
+      setError(getApiErrorMessage(err, 'Failed to load payment history'));
+    }
   };
 
   useEffect(() => {
     api.get('/collection/loans')
       .then(({ data }) => setLoans(data.loans))
+      .catch((err: unknown) => setError(getApiErrorMessage(err, 'Failed to load loans')))
       .finally(() => setLoading(false));
   }, []);
 
@@ -81,8 +90,8 @@ export default function CollectionPage() {
                 ) : loans.map((loan) => (
                   <tr key={loan._id} className={`hover:bg-gray-50 ${selectedLoan?._id === loan._id ? 'bg-blue-50' : ''}`}>
                     <td className="px-4 py-3">
-                      <p className="font-medium">{loan.borrower?.name || "Unknown User"}</p>
-<p className="text-gray-400 text-xs">{loan.borrower?.email || "-"}</p>
+                      <p className="font-medium">{loan.borrower?.name || 'Unknown User'}</p>
+                      <p className="text-gray-400 text-xs">{loan.borrower?.email || '-'}</p>
                     </td>
                     <td className="px-4 py-3">{fmt(loan.totalRepayment)}</td>
                     <td className="px-4 py-3 text-green-600">{fmt(loan.totalPaid)}</td>
@@ -109,7 +118,7 @@ export default function CollectionPage() {
       {/* Payment Panel */}
       {selectedLoan && (
         <div className="w-80 bg-white rounded-xl shadow-sm border p-5 h-fit sticky top-4">
-          <h3 className="font-bold text-gray-800 mb-1">{selectedLoan.borrower.name}</h3>
+          <h3 className="font-bold text-gray-800 mb-1">{selectedLoan.borrower?.name || 'Unknown User'}</h3>
           <p className="text-xs text-gray-500 mb-4">Outstanding: <strong className="text-red-600">{fmt(selectedLoan.totalRepayment - selectedLoan.totalPaid)}</strong></p>
 
           {error && <div className="bg-red-50 text-red-600 text-xs p-2 rounded mb-3">{error}</div>}
